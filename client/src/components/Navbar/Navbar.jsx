@@ -4,6 +4,7 @@ import useStyles from "./styles";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { jwtDecode } from "jwt-decode";
 
 const Navbar = () => {
   const classes = useStyles();
@@ -13,14 +14,16 @@ const Navbar = () => {
 
   const logout = () => {
     dispatch({ type: "LOGOUT" });
-    navigate("/");
+    navigate("/auth");
     setUser(null);
   };
 
   useEffect(() => {
     const token = user?.token;
-
-    // check for jwt for manual sign-in
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      if (decodedToken.exp * 1000 < new Date().getTime()) logout();
+    }
 
     setUser(JSON.parse(localStorage.getItem("profile")));
   }, [navigate]);
@@ -56,7 +59,7 @@ const Navbar = () => {
               src={user?.picture}
               alt={user?.name}
             >
-              {user?.given_name?.charAt(0)}
+              {user?.name?.charAt(0)}
             </Avatar>
             <Typography className={classes.userName} variant="h6">
               {user?.name}

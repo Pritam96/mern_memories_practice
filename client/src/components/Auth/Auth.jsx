@@ -7,17 +7,27 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { jwtDecode } from "jwt-decode";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { GoogleLogin } from "@react-oauth/google";
 import makeStyles from "./styles";
 import Input from "./Input";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { signin, signup } from "../../actions/auth";
+
+const initialFormState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 
 const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  const [formData, setFormData] = useState(initialFormState);
+
   const classes = makeStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -25,7 +35,9 @@ const Auth = () => {
   const handleShowPassword = () =>
     setShowPassword((prevShowPassword) => !prevShowPassword);
 
-  const handleChange = () => {};
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const switchMode = () => {
     setIsSignup((prevIsSignup) => !prevIsSignup);
@@ -33,10 +45,9 @@ const Auth = () => {
   };
 
   const googleSuccess = async (response) => {
+    const { clientId, credential } = response;
     try {
-      const decodedToken = jwtDecode(response?.credential);
-      dispatch({ type: "AUTH", data: decodedToken });
-      navigate("/");
+      dispatch(signin({ clientId, credential }, navigate));
     } catch (error) {
       console.log(error);
     }
@@ -46,7 +57,14 @@ const Auth = () => {
     console.log(error);
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isSignup) {
+      dispatch(signup(formData, navigate));
+    } else {
+      dispatch(signin(formData, navigate));
+    }
+  };
 
   return (
     <Container component="main" maxWidth="xs">

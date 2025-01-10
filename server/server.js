@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 
 import postRoutes from "./routes/posts.js";
+import userRoutes from "./routes/users.js";
 import connectDB from "./config/db.js";
 
 dotenv.config({ path: "./config/config.env" });
@@ -16,6 +17,8 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 // app.use(cors());
 
 app.use("/api/posts", postRoutes);
+app.use("/api/user", userRoutes);
+
 app.use("/", (req, res) => {
   res.send("Hello to Memories API");
 });

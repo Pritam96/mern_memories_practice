@@ -15,10 +15,11 @@ import reducers from "./reducers";
 import { thunk } from "redux-thunk";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
 createRoot(document.getElementById("root")).render(
-  <GoogleOAuthProvider clientId="97930164417-3h9vlvm4eo8rh4iggepfbbtk02r85tjo.apps.googleusercontent.com">
+  <GoogleOAuthProvider clientId={clientId}>
     <StrictMode>
       <ThemeProvider theme={theme}>
         <Provider store={store}>

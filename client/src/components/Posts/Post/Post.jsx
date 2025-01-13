@@ -1,9 +1,11 @@
 import {
+  Box,
   Button,
   Card,
   CardActions,
   CardContent,
   CardMedia,
+  Chip,
   Typography,
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -54,12 +56,13 @@ const Post = ({ post, setCurrentId }) => {
   };
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} raised elevation={6}>
       <CardMedia
         className={classes.media}
-        image={post.selectedFile || "https://via.placeholder.com/150"}
+        image={post.selectedFile || ""}
         alt={post.title}
         title={post.title}
+        component="div"
       />
       <div className={classes.overlay}>
         <Typography variant="h6">{post.name}</Typography>
@@ -80,8 +83,19 @@ const Post = ({ post, setCurrentId }) => {
       )}
       <div className={classes.details}>
         <Typography variant="body2" color="textSecondary">
-          {post.tags.map((tag) => `#${tag} `)}
+          {post.tags.map((tag) => `#${tag}`).join(" ")}
         </Typography>
+
+        {/* <Box>
+          {post.tags.map((tag, index) => (
+            <Chip
+              key={index}
+              label={`#${tag}`}
+              size="small"
+              style={{ margin: "2px" }}
+            />
+          ))}
+        </Box> */}
       </div>
       <Typography className={classes.title} variant="h5" gutterBottom>
         {post.title}

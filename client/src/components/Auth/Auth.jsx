@@ -54,7 +54,8 @@ const Auth = () => {
   };
 
   const googleFailure = async (error) => {
-    console.log(error);
+    console.log("Google Sign In was unsuccessful. Please try again.");
+    console.log("Error Details:", error);
   };
 
   const handleSubmit = (e) => {

@@ -1,5 +1,6 @@
 import { AppBar, Avatar, Button, Toolbar, Typography } from "@mui/material";
-import memories from "../../images/memories.png";
+import memoriesLogo from "../../images/memories-Logo.png";
+import memoriesText from "../../images/memories-Text.png";
 import useStyles from "./styles";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -39,18 +40,20 @@ const Navbar = () => {
         justifyContent: "space-between",
       }}
     >
-      <div className={classes.brandContainer}>
-        <Typography
-          component={Link}
-          to="/"
-          className={classes.heading}
-          variant="h2"
-          align="center"
-        >
-          Memories
-        </Typography>
-        <img className={classes.image} src={memories} alt="icon" height="60" />
-      </div>
+      <Link className={classes.brandContainer} to="/">
+        <img
+          className={classes.image}
+          src={memoriesText}
+          alt="icon"
+          height="45px"
+        />
+        <img
+          className={classes.image}
+          src={memoriesLogo}
+          alt="icon"
+          height="40px"
+        />
+      </Link>
       <Toolbar className={classes.toolbar}>
         {user ? (
           <div className={classes.profile}>

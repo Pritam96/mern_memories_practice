@@ -31,8 +31,22 @@ const Form = ({ currentId, setCurrentId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (currentId)
-      dispatch(updatePost(currentId, { ...postData, name: user?.name }));
-    else dispatch(createPost({ ...postData, name: user?.name }));
+      // dispatch(updatePost(currentId, { ...postData, name: user?.name }));
+      dispatch(
+        updatePost(currentId, {
+          ...postData,
+          name: user?.name,
+          tags: postData.tags.map((tag) => tag.trim().toLowerCase()),
+        })
+      );
+    else
+      dispatch(
+        createPost({
+          ...postData,
+          name: user?.name,
+          tags: postData.tags.map((tag) => tag.trim().toLowerCase()),
+        })
+      );
     clear();
   };
 
@@ -57,7 +71,7 @@ const Form = ({ currentId, setCurrentId }) => {
   }
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} elevation={6}>
       <form
         autoComplete="off"
         noValidate

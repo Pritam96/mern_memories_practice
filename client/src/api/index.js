@@ -11,7 +11,13 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-export const fetchPosts = async () => API.get("/posts");
+export const fetchPosts = async (page) => API.get(`/posts?page=${page}`);
+export const fetchPostsBySearch = async (searchQuery) =>
+  API.get(
+    `/posts/search?searchQuery=${searchQuery.search || "none"}&tags=${
+      searchQuery.tags
+    }` 
+  );
 export const createPost = async (newPost) => API.post("/posts", newPost);
 export const updatePost = async (id, updatedPost) =>
   API.patch(`/posts/${id}`, updatedPost);

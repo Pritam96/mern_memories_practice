@@ -3,6 +3,7 @@ import {
   END_LOADING,
   FETCH_ALL,
   FETCH_BY_SEARCH,
+  FETCH_POST,
   CREATE,
   UPDATE,
   DELETE,
@@ -28,6 +29,17 @@ export const getPostsBySearch = (searchQuery) => async (dispatch) => {
     dispatch({ type: START_LOADING });
     const { data } = await api.fetchPostsBySearch(searchQuery);
     dispatch({ type: FETCH_BY_SEARCH, payload: data });
+    dispatch({ type: END_LOADING });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getPost = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: START_LOADING });
+    const { data } = await api.fetchPost(id);
+    dispatch({ type: FETCH_POST, payload: data });
     dispatch({ type: END_LOADING });
   } catch (error) {
     console.log(error);

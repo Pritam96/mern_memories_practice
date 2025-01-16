@@ -23,7 +23,9 @@ export const createPost = async (newPost) => API.post("/posts", newPost);
 export const updatePost = async (id, updatedPost) =>
   API.patch(`/posts/${id}`, updatedPost);
 export const deletePost = async (id) => API.delete(`/posts/${id}`);
-export const likePost = async (id) => API.delete(`/posts/${id}/likePost`);
+export const likePost = async (id) => API.patch(`/posts/${id}/likePost`);
+export const comment = async (value, id) =>
+  API.post(`/posts/${id}/commentPost`, { value });
 
 export const signIn = async (formData) => API.post("/user/signin", formData);
 export const signUp = async (formData) => API.post("/user/signup", formData);

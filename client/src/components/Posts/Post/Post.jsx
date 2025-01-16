@@ -1,13 +1,10 @@
 import {
-  Box,
   Button,
   ButtonBase,
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
   CardMedia,
-  Chip,
   Typography,
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";

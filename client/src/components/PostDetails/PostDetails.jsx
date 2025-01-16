@@ -4,21 +4,37 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import moment from "moment";
 import useStyles from "./styles";
-import { getPost } from "../../actions/posts";
+import { getPost, getPostsBySearch } from "../../actions/posts";
 
 const PostDetails = () => {
-  const { post, isLoading } = useSelector((state) => state.posts);
+  const { post, posts, isLoading } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const classes = useStyles();
 
   const { id } = useParams();
 
+  const openPost = (_id) => {
+    navigate(`/posts/${_id}`);
+  };
+
   useEffect(() => {
     if (id) {
       dispatch(getPost(id));
     }
   }, [id, dispatch]);
+
+  useEffect(() => {
+    if (post) {
+      dispatch(
+        getPostsBySearch({ search: "none", tags: post?.tags.join(",") })
+      );
+    }
+  }, [post, dispatch]);
+
+  let recommendedPosts = [];
+  if (!isLoading && post)
+    recommendedPosts = posts?.filter((p) => p._id !== post._id);
 
   if (!post) return null;
 
@@ -68,6 +84,37 @@ const PostDetails = () => {
           />
         </div>
       </div>
+      {recommendedPosts.length && (
+        <div className={classes.section}>
+          <Typography gutterBottom variant="h5">
+            You might also like:
+          </Typography>
+          <Divider />
+          <div className={classes.recommendedPosts}>
+            {recommendedPosts.map((p) => (
+              <div
+                key={p._id}
+                style={{ margin: "20px", cursor: "pointer" }}
+                onClick={() => openPost(p._id)}
+              >
+                <Typography gutterBottom variant="h6">
+                  {p.title}
+                </Typography>
+                <Typography gutterBottom variant="subtitle2">
+                  {p.name}
+                </Typography>
+                <Typography gutterBottom variant="subtitle2">
+                  {p.message}
+                </Typography>
+                <Typography gutterBottom variant="subtitle1">
+                  Likes: {p.likes.length}
+                </Typography>
+                <img src={p.selectedFile} width="200px" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </Paper>
   );
 };

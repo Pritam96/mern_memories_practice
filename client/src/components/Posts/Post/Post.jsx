@@ -66,7 +66,11 @@ const Post = ({ post, setCurrentId }) => {
 
   return (
     <Card className={classes.card} raised elevation={6}>
-      <CardActionArea className={classes.cardAction} onClick={openPost}>
+      <ButtonBase
+        className={classes.cardAction}
+        onClick={openPost}
+        style={{ display: "block", textAlign: "initial" }}
+      >
         <CardMedia
           className={classes.media}
           image={
@@ -83,32 +87,10 @@ const Post = ({ post, setCurrentId }) => {
             {moment(post.createdAt).fromNow()}
           </Typography>
         </div>
-        {user?._id === post?.creator && (
-          <div className={classes.overlay2}>
-            <Button
-              style={{ color: "white" }}
-              size="small"
-              onClick={() => setCurrentId(post._id)}
-            >
-              <MoreHorizIcon fontSize="default" />
-            </Button>
-          </div>
-        )}
         <div className={classes.details}>
           <Typography variant="body2" color="textSecondary">
             {post.tags.map((tag) => `#${tag}`).join(" ")}
           </Typography>
-
-          {/* <Box>
-          {post.tags.map((tag, index) => (
-            <Chip
-              key={index}
-              label={`#${tag}`}
-              size="small"
-              style={{ margin: "2px" }}
-            />
-          ))}
-        </Box> */}
         </div>
         <Typography className={classes.title} variant="h5" gutterBottom>
           {post.title}
@@ -118,7 +100,21 @@ const Post = ({ post, setCurrentId }) => {
             {post.message}
           </Typography>
         </CardContent>
-      </CardActionArea>
+      </ButtonBase>
+      {user?._id === post?.creator && (
+        <div className={classes.overlay2}>
+          <Button
+            style={{ color: "white" }}
+            size="small"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent ButtonBase from triggering
+              setCurrentId(post._id);
+            }}
+          >
+            <MoreHorizIcon fontSize="default" />
+          </Button>
+        </div>
+      )}
       <CardActions className={classes.cardActions}>
         <Button
           size="small"
@@ -129,7 +125,14 @@ const Post = ({ post, setCurrentId }) => {
           <Likes />
         </Button>
         {user?._id === post?.creator && (
-          <Button size="small" color="primary" onClick={handleDelete}>
+          <Button
+            size="small"
+            color="primary"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent ButtonBase from triggering
+              handleDelete();
+            }}
+          >
             <DeleteIcon fontSize="small" /> &nbsp; Delete
           </Button>
         )}

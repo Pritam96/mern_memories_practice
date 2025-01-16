@@ -4,15 +4,18 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import FileBase from "react-file-base64";
 import { createPost, updatePost } from "../../actions/posts";
+import { useNavigate } from "react-router";
 
 const Form = ({ currentId, setCurrentId }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const classes = useStyles();
 
   const user = JSON.parse(localStorage.getItem("profile"));
 
   const post = useSelector((state) =>
-    currentId ? state.posts.find((p) => p._id === currentId) : null
+    currentId ? state.posts.posts.find((p) => p._id === currentId) : null
   );
 
   const [postData, setPostData] = useState({
@@ -30,8 +33,7 @@ const Form = ({ currentId, setCurrentId }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (currentId)
-      // dispatch(updatePost(currentId, { ...postData, name: user?.name }));
+    if (currentId) {
       dispatch(
         updatePost(currentId, {
           ...postData,
@@ -39,15 +41,20 @@ const Form = ({ currentId, setCurrentId }) => {
           tags: postData.tags.map((tag) => tag.trim().toLowerCase()),
         })
       );
-    else
+      clear();
+    } else {
       dispatch(
-        createPost({
-          ...postData,
-          name: user?.name,
-          tags: postData.tags.map((tag) => tag.trim().toLowerCase()),
-        })
+        createPost(
+          {
+            ...postData,
+            name: user?.name,
+            tags: postData.tags.map((tag) => tag.trim().toLowerCase()),
+          },
+          navigate
+        )
       );
-    clear();
+      clear();
+    }
   };
 
   const clear = () => {

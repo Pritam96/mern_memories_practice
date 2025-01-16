@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 import useStyles from "./styles";
@@ -22,44 +23,41 @@ const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const classes = useStyles();
-  const [likes, setLikes] = useState(post?.likes);
+  const [likes, setLikes] = useState(post?.likes || []);
 
   const user = JSON.parse(localStorage.getItem("profile"));
 
-  const hasLikedThePost = post.likes.includes(user?._id);
+  const hasLikedThePost = likes.includes(user?._id);
 
-  const handleDelete = () => {
+  const handleDelete = (e) => {
+    e.stopPropagation(); // Prevent ButtonBase click
     dispatch(deletePost(post._id));
   };
 
   const handleLike = () => {
     dispatch(likePost(post._id));
     if (hasLikedThePost) {
-      // toggle to dislike
-      setLikes(post?.likes?.filter((userId) => userId !== user?._id));
+      setLikes(likes.filter((userId) => userId !== user?._id));
     } else {
-      // toggle to like
-      setLikes([...post?.likes, user?._id]);
+      setLikes([...likes, user?._id]);
     }
   };
 
-  const openPost = () => {
-    navigate(`/posts/${post._id}`);
-  };
+  const openPost = () => navigate(`/posts/${post._id}`);
 
   const Likes = () => {
-    if (post.likes?.length > 0) {
-      return likes.includes(user?._id) ? (
+    if (likes?.length > 0) {
+      return hasLikedThePost ? (
         <>
           <ThumbUpAltIcon fontSize="small" />
           &nbsp;
           {likes.length > 1
             ? `You and ${likes.length - 1} others`
-            : "You like this"}
+            : `${likes.length} like${likes.length > 1 ? "s" : ""}`}
         </>
       ) : (
         <>
-          <ThumbUpAltIcon fontSize="small" />
+          <ThumbUpOffAltIcon fontSize="small" />
           &nbsp;{likes.length} {likes.length === 1 ? "Like" : "Likes"}
         </>
       );
@@ -67,7 +65,7 @@ const Post = ({ post, setCurrentId }) => {
 
     return (
       <>
-        <ThumbUpAltIcon fontSize="small" />
+        <ThumbUpOffAltIcon fontSize="small" />
         &nbsp; Like
       </>
     );
@@ -82,28 +80,28 @@ const Post = ({ post, setCurrentId }) => {
       >
         <CardMedia
           className={classes.media}
-          image={post.selectedFile || placeHolderImage}
-          alt={post.title}
-          title={post.title}
+          image={post?.selectedFile || placeHolderImage}
+          alt={post?.title || "Post"}
+          title={post?.title || "Post"}
           component="div"
         />
         <div className={classes.overlay}>
-          <Typography variant="h6">{post.name}</Typography>
+          <Typography variant="h6">{post?.name || "Anonymous"}</Typography>
           <Typography variant="body2">
-            {moment(post.createdAt).fromNow()}
+            {moment(post?.createdAt).fromNow()}
           </Typography>
         </div>
         <div className={classes.details}>
           <Typography variant="body2" color="textSecondary">
-            {post.tags.map((tag) => `#${tag}`).join(" ")}
+            {post?.tags?.map((tag) => `#${tag}`).join(" ") || ""}
           </Typography>
         </div>
         <Typography className={classes.title} variant="h5" gutterBottom>
-          {post.title}
+          {post?.title || "Untitled Post"}
         </Typography>
         <CardContent>
           <Typography variant="body2" color="textSecondary" component="p">
-            {post.message}
+            {post?.message || "No content available"}
           </Typography>
         </CardContent>
       </ButtonBase>
@@ -113,7 +111,7 @@ const Post = ({ post, setCurrentId }) => {
             style={{ color: "white" }}
             size="small"
             onClick={(e) => {
-              e.stopPropagation(); // Prevent ButtonBase from triggering
+              e.stopPropagation();
               setCurrentId(post._id);
             }}
           >
@@ -131,14 +129,7 @@ const Post = ({ post, setCurrentId }) => {
           <Likes />
         </Button>
         {user?._id === post?.creator && (
-          <Button
-            size="small"
-            color="primary"
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent ButtonBase from triggering
-              handleDelete();
-            }}
-          >
+          <Button size="small" color="primary" onClick={handleDelete}>
             <DeleteIcon fontSize="small" /> &nbsp; Delete
           </Button>
         )}

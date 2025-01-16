@@ -6,6 +6,7 @@ export default makeStyles((theme) => ({
     objectFit: "cover",
     width: "100%",
     maxHeight: "600px",
+    maxWidth: "700px",
   },
   card: {
     display: "flex",

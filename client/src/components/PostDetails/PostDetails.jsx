@@ -6,6 +6,8 @@ import moment from "moment";
 import useStyles from "./styles";
 import { getPost, getPostsBySearch } from "../../actions/posts";
 import CommentSection from "./CommentSection";
+import placeHolderImage from "../../images/placeholder.png";
+
 
 const PostDetails = () => {
   const { post, posts, isLoading } = useSelector((state) => state.posts);
@@ -75,10 +77,7 @@ const PostDetails = () => {
         <div className={classes.imageSection}>
           <img
             className={classes.media}
-            src={
-              post.selectedFile ||
-              "https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png"
-            }
+            src={post.selectedFile || placeHolderImage}
             alt={post.title}
           />
         </div>
@@ -108,7 +107,7 @@ const PostDetails = () => {
                 <Typography gutterBottom variant="subtitle1">
                   Likes: {p.likes.length}
                 </Typography>
-                <img src={p.selectedFile} width="200px" />
+                <img src={p.selectedFile || placeHolderImage} width="200px" />
               </div>
             ))}
           </div>

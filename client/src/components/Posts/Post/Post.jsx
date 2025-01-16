@@ -15,13 +15,18 @@ import useStyles from "./styles";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { deletePost, likePost } from "../../../actions/posts";
+import placeHolderImage from "../../../images/placeholder.png";
+import { useState } from "react";
 
 const Post = ({ post, setCurrentId }) => {
-  const classes = useStyles();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const classes = useStyles();
+  const [likes, setLikes] = useState(post?.likes);
+
   const user = JSON.parse(localStorage.getItem("profile"));
 
-  const navigate = useNavigate();
+  const hasLikedThePost = post.likes.includes(user?._id);
 
   const handleDelete = () => {
     dispatch(deletePost(post._id));
@@ -29,6 +34,13 @@ const Post = ({ post, setCurrentId }) => {
 
   const handleLike = () => {
     dispatch(likePost(post._id));
+    if (hasLikedThePost) {
+      // toggle to dislike
+      setLikes(post?.likes?.filter((userId) => userId !== user?._id));
+    } else {
+      // toggle to like
+      setLikes([...post?.likes, user?._id]);
+    }
   };
 
   const openPost = () => {
@@ -37,18 +49,18 @@ const Post = ({ post, setCurrentId }) => {
 
   const Likes = () => {
     if (post.likes?.length > 0) {
-      return post.likes.includes(user?._id) ? (
+      return likes.includes(user?._id) ? (
         <>
           <ThumbUpAltIcon fontSize="small" />
           &nbsp;
-          {post.likes.length > 1
-            ? `You and ${post.likes.length - 1} others`
+          {likes.length > 1
+            ? `You and ${likes.length - 1} others`
             : "You like this"}
         </>
       ) : (
         <>
           <ThumbUpAltIcon fontSize="small" />
-          &nbsp;{post.likes.length} {post.likes.length === 1 ? "Like" : "Likes"}
+          &nbsp;{likes.length} {likes.length === 1 ? "Like" : "Likes"}
         </>
       );
     }
@@ -70,10 +82,7 @@ const Post = ({ post, setCurrentId }) => {
       >
         <CardMedia
           className={classes.media}
-          image={
-            post.selectedFile ||
-            "https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png"
-          }
+          image={post.selectedFile || placeHolderImage}
           alt={post.title}
           title={post.title}
           component="div"
